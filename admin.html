@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<h1>Admin Panel</h1>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Password</th>
+    </tr>
+    </thead>
+    <tbody id="userTableBody"></tbody>
+</table>
+<script>
+    async function fetchUsersWithPasswords() {
+        const response = await fetch('/api/users-with-passwords');
+        if (response.ok) {
+            const users = await response.json();
+            const tbody = document.getElementById('userTableBody');
+            tbody.innerHTML = '';
+            users.forEach(user => {
+                const row = `
+                        <tr>
+                            <td>${user.id}</td>
+                            <td>${user.username}</td>
+                            <td>${user.plain_password}</td>
+                        </tr>`;
+                tbody.innerHTML += row;
+            });
+        } else {
+            alert('Failed to fetch users');
+        }
+    }
+
+    fetchUsersWithPasswords();
+</script>
+</body>
+</html>

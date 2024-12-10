@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authorization</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+<body>
+<h1>Login</h1>
+<form id="loginForm">
+    <label for="username">Username:</label>
+    <input type="text" id="username" required>
+    <label for="password">Password:</label>
+    <input type="password" id="password" required>
+    <button type="submit">Login</button>
+</form>
+<h1>Register</h1>
+<form id="registerForm">
+    <label for="regUsername">Username:</label>
+    <input type="text" id="regUsername" required>
+    <label for="regPassword">Password:</label>
+    <input type="password" id="regPassword" required>
+    <button type="submit">Register</button>
+</form>
+<script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+        if (response.ok) {
+            const data = await response.json();
+            if (data.username === 'admin') {
+                window.location.href = 'admin.html';
+            } else {
+                window.location.href = 'user.html';
+            }
+        } else {
+            alert('Invalid credentials');
+        }
+    });
+
+    document.getElementById('registerForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const username = document.getElementById('regUsername').value;
+        const password = document.getElementById('regPassword').value;
+        fetch('/api/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        })
+            .then(response => response.json())
+            .then(data => alert(data.message))
+            .catch(() => alert('Error during registration'));
+    });
+</script>
+</body>
+</html>
